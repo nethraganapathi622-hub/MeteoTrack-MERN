@@ -1,0 +1,235 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pageHeader {
+  margin-bottom: 0.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.metricCard {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.metricHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metricTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.iconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.primary { background: rgba(59, 130, 246, 0.1); color: var(--primary); }
+.success { background: var(--success-bg); color: var(--success-text); }
+.warning { background: var(--warning-bg); color: var(--warning-text); }
+.info { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+
+.metricBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.metricValue {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.metricTrend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.trendUp { color: var(--success); font-weight: 500; }
+.trendDown { color: var(--danger); font-weight: 500; }
+.trendLabel { color: var(--text-muted); }
+
+.bentoGrid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+}
+
+.chartCard {
+  grid-column: span 6;
+  height: 380px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapCard {
+  grid-column: span 8;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapContent {
+  flex: 1;
+  padding: 0 !important;
+}
+
+.alertsCard {
+  grid-column: span 4;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chartContainer {
+  height: 280px;
+  width: 100%;
+}
+
+.mapPlaceholder {
+  height: 100%;
+  width: 100%;
+  background-color: var(--bg-surface-elevated);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--border-color);
+}
+
+.mapIcon {
+  color: var(--border-color-focus);
+  opacity: 0.5;
+}
+
+.mapText {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.mockMarker {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
+.markerDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.bgSuccess { background-color: var(--success); }
+.bgWarning { background-color: var(--warning); }
+.bgDanger { background-color: var(--danger); }
+
+.alertsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+}
+
+.alertItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.alertItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.alertMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.alertStation {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.alertDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.alertType {
+  color: var(--text-secondary);
+}
+
+.alertTime {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.viewAll {
+  margin-top: auto;
+  padding-top: 1rem;
+  text-align: center;
+}
+
+.viewAll a {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+@media (max-width: 1024px) {
+  .chartCard {
+    grid-column: span 12;
+  }
+  .mapCard {
+    grid-column: span 12;
+  }
+  .alertsCard {
+    grid-column: span 12;
+  }
+}

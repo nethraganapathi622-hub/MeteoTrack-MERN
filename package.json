@@ -1,0 +1,14 @@
+{
+  "name": "meteotrack-monorepo",
+  "version": "1.0.0",
+  "description": "Real-Time Meteorological Station Monitoring & Management System",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "install:all": "npm install"
+  }
+}
