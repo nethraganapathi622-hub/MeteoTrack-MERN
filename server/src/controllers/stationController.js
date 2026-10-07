@@ -50,6 +50,16 @@ exports.updateStation = async (req, res, next) => {
 
 exports.deleteStation = async (req, res, next) => {
   try {
+    // Check if any sensors are associated with this station
+    const Sensor = require('../models/Sensor');
+    const sensorCount = await Sensor.countDocuments({ station: req.params.id });
+    if (sensorCount > 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: `Cannot delete station. There are ${sensorCount} sensors associated with it.` 
+      });
+    }
+
     const station = await Station.findByIdAndDelete(req.params.id);
     if (!station) {
       return res.status(404).json({ success: false, message: 'Station not found' });

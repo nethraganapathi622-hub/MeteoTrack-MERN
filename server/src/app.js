@@ -8,6 +8,7 @@ const healthRoutes = require('./routes/healthRoutes');
 const authRoutes = require('./routes/authRoutes');
 const stationRoutes = require('./routes/stationRoutes');
 const sensorRoutes = require('./routes/sensorRoutes');
+const readingRoutes = require('./routes/readingRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -35,6 +36,7 @@ app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/stations', stationRoutes);
 app.use('/api/sensors', sensorRoutes);
+app.use('/api/readings', readingRoutes);
 
 // Error Handling Middleware
 app.use(errorHandler);
