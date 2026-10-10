@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import Login from './pages/Login/Login';
 import Stations from './pages/Stations/Stations';
 import Sensors from './pages/Sensors/Sensors';
+import LiveMonitoring from './pages/LiveMonitoring/LiveMonitoring';
 
 const PlaceholderPage = ({ title }) => (
   <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-secondary)' }}>
@@ -27,7 +28,7 @@ function App() {
             <Route path="/" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
               <Route index element={<Dashboard />} />
               <Route path="stations" element={<Stations />} />
-              <Route path="live" element={<PlaceholderPage title="Live Monitoring" />} />
+              <Route path="live" element={<LiveMonitoring />} />
               <Route path="map" element={<PlaceholderPage title="Interactive Map" />} />
               <Route path="sensors" element={<Sensors />} />
               <Route path="analytics" element={<PlaceholderPage title="Historical Analytics" />} />
