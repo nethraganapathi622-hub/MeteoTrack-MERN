@@ -2,6 +2,7 @@ const SensorReading = require('../models/SensorReading');
 const Sensor = require('../models/Sensor');
 const mongoose = require('mongoose');
 const { getIO } = require('../socket');
+const { evaluateThresholds } = require('../services/alertService');
 
 exports.createReading = async (req, res, next) => {
   try {
@@ -52,6 +53,81 @@ exports.createReading = async (req, res, next) => {
     io.to('global').emit('sensor:reading', payload);
     io.to(`station:${sensorDoc.station._id}`).emit('sensor:reading', payload);
     
+    // Evaluate alerts asynchronously to not block the response
+    try {
+      const alertResult = await evaluateThresholds(sensorDoc, reading.value, reading.timestamp, { quality: reading.quality });
+
+      if (alertResult) {
+        if (Array.isArray(alertResult)) {
+          alertResult.forEach(alert => {
+            const alertPayload = {
+              _id: alert._id,
+              station: {
+                _id: sensorDoc.station._id,
+                name: sensorDoc.station.name || 'Unknown',
+                stationId: sensorDoc.station.stationId
+              },
+              sensor: {
+                _id: sensorDoc._id,
+                name: sensorDoc.name || 'Unknown',
+                type: sensorDoc.type,
+                sensorId: sensorDoc.sensorId
+              },
+              stationId: sensorDoc.station._id,
+              stationName: sensorDoc.station.name || 'Unknown',
+              sensorId: sensorDoc._id,
+              sensorName: sensorDoc.name || 'Unknown',
+              type: alert.type,
+              parameter: alert.parameter,
+              value: alert.value,
+              threshold: alert.threshold,
+              severity: alert.severity,
+              status: alert.status,
+              message: alert.message,
+              triggeredAt: alert.triggeredAt,
+              acknowledgedAt: alert.acknowledgedAt,
+              resolvedAt: alert.resolvedAt
+            };
+            io.to('global').emit('alert:update', alertPayload);
+            io.to(`station:${sensorDoc.station._id}`).emit('alert:update', alertPayload);
+          });
+        } else {
+          const alertPayload = {
+            _id: alertResult._id,
+            station: {
+              _id: sensorDoc.station._id,
+              name: sensorDoc.station.name || 'Unknown',
+              stationId: sensorDoc.station.stationId
+            },
+            sensor: {
+              _id: sensorDoc._id,
+              name: sensorDoc.name || 'Unknown',
+              type: sensorDoc.type,
+              sensorId: sensorDoc.sensorId
+            },
+            stationId: sensorDoc.station._id,
+            stationName: sensorDoc.station.name || 'Unknown',
+            sensorId: sensorDoc._id,
+            sensorName: sensorDoc.name || 'Unknown',
+            type: alertResult.type,
+            parameter: alertResult.parameter,
+            value: alertResult.value,
+            threshold: alertResult.threshold,
+            severity: alertResult.severity,
+            status: alertResult.status,
+            message: alertResult.message,
+            triggeredAt: alertResult.triggeredAt,
+            acknowledgedAt: alertResult.acknowledgedAt,
+            resolvedAt: alertResult.resolvedAt
+          };
+          io.to('global').emit('alert:new', alertPayload);
+          io.to(`station:${sensorDoc.station._id}`).emit('alert:new', alertPayload);
+        }
+      }
+    } catch (alertErr) {
+      console.error('[ReadingController] Failed to evaluate alerts:', alertErr);
+    }
+
     res.status(201).json({ success: true, data: reading });
   } catch (err) {
     next(err);

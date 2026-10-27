@@ -35,7 +35,12 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       return userData;
     } catch (err) {
-      const msg = err.response?.data?.message || 'Login failed';
+      let msg = 'Login failed';
+      if (err.response?.data?.message) {
+        msg = err.response.data.message;
+      } else if (typeof err.response?.data === 'string') {
+        msg = err.response.data; // For express-rate-limit text responses
+      }
       setError(msg);
       throw new Error(msg);
     }

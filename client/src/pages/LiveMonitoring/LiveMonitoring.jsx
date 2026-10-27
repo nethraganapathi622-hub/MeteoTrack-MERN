@@ -165,15 +165,17 @@ const LiveMonitoring = () => {
     recentReadings.forEach(r => {
       const timeStr = format(new Date(r.timestamp), 'HH:mm:ss');
       if (!grouped[timeStr]) {
-        grouped[timeStr] = { time: timeStr };
+        grouped[timeStr] = { time: timeStr, _ts: new Date(r.timestamp).getTime() };
       }
       const sensor = sensors.find(s => s._id === r.sensor);
       if (sensor) {
-        grouped[timeStr][sensor.type] = r.value;
+        if (grouped[timeStr][sensor.type] === undefined || grouped[timeStr]._ts <= new Date(r.timestamp).getTime()) {
+          grouped[timeStr][sensor.type] = Number(r.value);
+        }
       }
     });
-    // recentReadings is descending (newest first). Recharts needs ascending.
-    return Object.values(grouped).reverse();
+    // Recharts needs ascending (oldest first). We sort explicitly by timestamp to fix any ordering bugs.
+    return Object.values(grouped).sort((a, b) => a._ts - b._ts);
   }, [recentReadings, sensors]);
 
   // Derived Summary

@@ -29,6 +29,21 @@ const sensorSchema = new mongoose.Schema({
   model: String,
   unit: String,
   accuracy: String,
+  minThreshold: {
+    type: Number,
+  },
+  maxThreshold: {
+    type: Number,
+    validate: {
+      validator: function(v) {
+        if (this.minThreshold != null && v != null) {
+          return this.minThreshold <= v;
+        }
+        return true;
+      },
+      message: 'Maximum threshold must be greater than or equal to minimum threshold'
+    }
+  },
   status: {
     type: String,
     enum: ['ONLINE', 'OFFLINE', 'WARNING', 'FAULT', 'MAINTENANCE'],

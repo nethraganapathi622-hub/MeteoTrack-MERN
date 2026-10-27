@@ -27,7 +27,9 @@ const Sensors = () => {
     type: 'TEMPERATURE',
     unit: '',
     status: 'OFFLINE',
-    station: ''
+    station: '',
+    minThreshold: '',
+    maxThreshold: ''
   });
   const [formError, setFormError] = useState(null);
 
@@ -87,7 +89,9 @@ const Sensors = () => {
         type: 'TEMPERATURE',
         unit: '',
         status: 'OFFLINE',
-        station: stations.length > 0 ? stations[0]._id : ''
+        station: stations.length > 0 ? stations[0]._id : '',
+        minThreshold: '',
+        maxThreshold: ''
       });
     } else if (sensor) {
       setFormData({
@@ -96,7 +100,9 @@ const Sensors = () => {
         type: sensor.type,
         unit: sensor.unit || '',
         status: sensor.status,
-        station: sensor.station?._id || sensor.station || ''
+        station: sensor.station?._id || sensor.station || '',
+        minThreshold: sensor.minThreshold !== undefined && sensor.minThreshold !== null ? sensor.minThreshold : '',
+        maxThreshold: sensor.maxThreshold !== undefined && sensor.maxThreshold !== null ? sensor.maxThreshold : ''
       });
     }
     
@@ -122,11 +128,21 @@ const Sensors = () => {
       return;
     }
 
+    const min = formData.minThreshold === '' ? null : Number(formData.minThreshold);
+    const max = formData.maxThreshold === '' ? null : Number(formData.maxThreshold);
+
+    if (min !== null && max !== null && min > max) {
+      setFormError('Maximum threshold must be greater than or equal to minimum threshold.');
+      return;
+    }
+
+    const finalPayload = { ...formData, minThreshold: min, maxThreshold: max };
+
     try {
       if (modalMode === 'create') {
-        await createSensor(formData);
+        await createSensor(finalPayload);
       } else if (modalMode === 'edit') {
-        await updateSensor(selectedSensor._id, formData);
+        await updateSensor(selectedSensor._id, finalPayload);
       }
       fetchData();
       closeModal();
@@ -304,7 +320,15 @@ const Sensors = () => {
                 </div>
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>Last Reading</span>
-                  <span className={styles.detailValue}>{selectedSensor.lastReading ? `${selectedSensor.lastReading} ${selectedSensor.unit}` : 'N/A'}</span>
+                  <span className={styles.detailValue}>{selectedSensor.lastReading ? `${selectedSensor.lastReading} ${selectedSensor.unit || ''}` : 'N/A'}</span>
+                </div>
+                <div className={styles.detailItem}>
+                  <span className={styles.detailLabel}>Min Threshold</span>
+                  <span className={styles.detailValue}>{selectedSensor.minThreshold !== undefined && selectedSensor.minThreshold !== null ? selectedSensor.minThreshold : 'Not Set'}</span>
+                </div>
+                <div className={styles.detailItem}>
+                  <span className={styles.detailLabel}>Max Threshold</span>
+                  <span className={styles.detailValue}>{selectedSensor.maxThreshold !== undefined && selectedSensor.maxThreshold !== null ? selectedSensor.maxThreshold : 'Not Set'}</span>
                 </div>
               </div>
             ) : (
@@ -345,6 +369,16 @@ const Sensors = () => {
                   <div className={styles.formGroup}>
                     <label>Unit</label>
                     <input type="text" name="unit" value={formData.unit} onChange={handleInputChange} placeholder="e.g. C, %, hPa" />
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div className={styles.formGroup}>
+                    <label>Min Threshold</label>
+                    <input type="number" step="any" name="minThreshold" value={formData.minThreshold} onChange={handleInputChange} placeholder="Optional" />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label>Max Threshold</label>
+                    <input type="number" step="any" name="maxThreshold" value={formData.maxThreshold} onChange={handleInputChange} placeholder="Optional" />
                   </div>
                 </div>
                 <div className={styles.formGroup}>

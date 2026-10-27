@@ -76,7 +76,7 @@ const Login = () => {
             </Button>
             
             <div className={styles.seedInfo}>
-              <p className="text-xs text-muted">Dev Hint: Use admin@meteotrack.com / password123</p>
+              <p className="text-xs text-muted">Dev Hint: Check SEED_PASSWORD in server/.env for admin password</p>
             </div>
           </form>
         </CardContent>

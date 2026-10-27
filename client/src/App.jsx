@@ -9,13 +9,11 @@ import Login from './pages/Login/Login';
 import Stations from './pages/Stations/Stations';
 import Sensors from './pages/Sensors/Sensors';
 import LiveMonitoring from './pages/LiveMonitoring/LiveMonitoring';
-
-const PlaceholderPage = ({ title }) => (
-  <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-    <h2>{title}</h2>
-    <p>This module will be implemented in future phases.</p>
-  </div>
-);
+import Alerts from './pages/Alerts/Alerts';
+import MapView from './pages/Map/Map';
+import Analytics from './pages/Analytics/Analytics';
+import Maintenance from './pages/Maintenance/Maintenance';
+import Settings from './pages/Settings/Settings';
 
 function App() {
   return (
@@ -29,12 +27,12 @@ function App() {
               <Route index element={<Dashboard />} />
               <Route path="stations" element={<Stations />} />
               <Route path="live" element={<LiveMonitoring />} />
-              <Route path="map" element={<PlaceholderPage title="Interactive Map" />} />
+              <Route path="map" element={<MapView />} />
               <Route path="sensors" element={<Sensors />} />
-              <Route path="analytics" element={<PlaceholderPage title="Historical Analytics" />} />
-              <Route path="alerts" element={<PlaceholderPage title="Alert Configuration" />} />
-              <Route path="maintenance" element={<PlaceholderPage title="Maintenance Tracking" />} />
-              <Route path="settings" element={<PlaceholderPage title="System Settings" />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route path="alerts" element={<Alerts />} />
+              <Route path="maintenance" element={<Maintenance />} />
+              <Route path="settings" element={<Settings />} />
             </Route>
           </Routes>
         </BrowserRouter>

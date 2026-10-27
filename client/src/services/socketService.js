@@ -4,10 +4,11 @@ class SocketService {
   constructor() {
     this.socket = null;
     this.listeners = new Map();
+    this.rooms = new Set();
   }
 
   connect() {
-    if (this.socket?.connected) {
+    if (this.socket) {
       return this.socket;
     }
 
@@ -36,6 +37,13 @@ class SocketService {
 
     this.socket.on('connect', () => {
       console.log('[Socket] Connected to server');
+      this.rooms.forEach(room => {
+        if (room === 'global') {
+          this.socket.emit('join_global');
+        } else {
+          this.socket.emit('join_station', room);
+        }
+      });
     });
 
     this.socket.on('disconnect', (reason) => {
@@ -75,25 +83,57 @@ class SocketService {
     this.listeners.delete('sensor:reading');
   }
 
+  subscribeToAlertNew(callback) {
+    if (this.socket) {
+      this.socket.on('alert:new', callback);
+    }
+    this.listeners.set('alert:new', callback);
+  }
+
+  unsubscribeFromAlertNew(callback) {
+    if (this.socket) {
+      this.socket.off('alert:new', callback);
+    }
+    this.listeners.delete('alert:new');
+  }
+
+  subscribeToAlertUpdate(callback) {
+    if (this.socket) {
+      this.socket.on('alert:update', callback);
+    }
+    this.listeners.set('alert:update', callback);
+  }
+
+  unsubscribeFromAlertUpdate(callback) {
+    if (this.socket) {
+      this.socket.off('alert:update', callback);
+    }
+    this.listeners.delete('alert:update');
+  }
+
   joinGlobal() {
+    this.rooms.add('global');
     if (this.socket && this.socket.connected) {
       this.socket.emit('join_global');
     }
   }
 
   leaveGlobal() {
+    this.rooms.delete('global');
     if (this.socket && this.socket.connected) {
       this.socket.emit('leave_global');
     }
   }
 
   joinStation(stationId) {
+    this.rooms.add(stationId);
     if (this.socket && this.socket.connected) {
       this.socket.emit('join_station', stationId);
     }
   }
 
   leaveStation(stationId) {
+    this.rooms.delete(stationId);
     if (this.socket && this.socket.connected) {
       this.socket.emit('leave_station', stationId);
     }
